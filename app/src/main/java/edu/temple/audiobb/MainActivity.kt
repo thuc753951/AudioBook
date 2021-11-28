@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
         //register for download reciever here
         // this is how you start a intent to a service
         serviceIntent = Intent(this, PlayerService::class.java)
+        bindService(serviceIntent,Connection, BIND_AUTO_CREATE)
 
         // If we're switching from one container to two containers
         // clear BookDetailsFragment from container1
