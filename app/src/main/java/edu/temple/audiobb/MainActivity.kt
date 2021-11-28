@@ -1,17 +1,32 @@
 package edu.temple.audiobb
 
+import android.app.DownloadManager
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import edu.temple.audlibplayer.PlayerService
 
-class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface {
+class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface, ControlFragment.ControlInterface {
 
     private lateinit var bookListFragment : BookListFragment
+    private lateinit var ControlFragment: ControlFragment
+
+    private val DIR = "audioBook"
+    var Aid: Long = 0
+    lateinit var DownloadManager: DownloadManager
+    lateinit var Temp: String
+
+    var isDownloadDone = false
+    lateinit var mediaControl: PlayerService.MediaControlBinder
+    var serviceConnection = false
+    var isItSave = false
+
+    lateinit var preferences: SharedPreferences
 
 
     private val searchRequest = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -101,5 +116,21 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
                 .addToBackStack(null)
                 .commit()
         }
+    }
+
+    override fun play() {
+        TODO("Not yet implemented")
+    }
+
+    override fun pause() {
+        TODO("Not yet implemented")
+    }
+
+    override fun stop() {
+        TODO("Not yet implemented")
+    }
+
+    override fun changeTime(position: Int) {
+        TODO("Not yet implemented")
     }
 }
