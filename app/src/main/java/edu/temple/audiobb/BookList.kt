@@ -33,6 +33,16 @@ class BookList : ViewModel(), Serializable{
         bookList.addAll(newBooks.bookList)
     }
 
+    fun getByTitle(book: Book): Book? {
+        if(bookList.contains(book)){
+            var position = bookList.indexOf(book)
+            if(position != -1){
+                return bookList.get(position)
+            }
+        }
+        return null
+    }
+
     operator fun get(index: Int) = bookList.get(index)
 
     fun size() = bookList.size
