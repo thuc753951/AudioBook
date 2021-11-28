@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import edu.temple.audiobb.R.id.control
 import edu.temple.audlibplayer.PlayerService
 
 class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface, ControlFragment.ControlInterface {
@@ -63,10 +64,12 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
             var place = (message.obj as PlayerService.BookProgress).progress.toFloat()
             var place2 = tempBook!!.duration
             var num = ((place / place2)*100).toInt()
-            Log.d( "PROGRESS", "NUM: "+num.toString()+" POSITION: "+place.toString()+" DURATION: "+ place2.toString())
-            controlFragment.updateProgress(num)
+            //Log.d( "PROGRESS", "NUM: "+num.toString()+" POSITION: "+place.toString()+" DURATION: "+ place2.toString())
 
-            controlFragment.setPlaying(selectedBookViewModel.getPlayingBook().value!!.title)
+                controlFragment.updateProgress(num)
+
+                controlFragment.setPlaying(selectedBookViewModel.getPlayingBook().value!!.title)
+
         }
         true
     }
@@ -95,6 +98,13 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
         serviceIntent = Intent(this, PlayerService::class.java)
         bindService(serviceIntent,Connection, BIND_AUTO_CREATE)
 
+        if(supportFragmentManager.findFragmentById(R.id.control) !is ControlFragment){
+            controlFragment = ControlFragment()
+            supportFragmentManager.beginTransaction()
+                .add(control, controlFragment, CONTROLFRAGMENT_KEY)
+                .commit()
+        }
+
         // If we're switching from one container to two containers
         // clear BookDetailsFragment from container1
         if (supportFragmentManager.findFragmentById(R.id.container1) is BookDetailsFragment
@@ -104,14 +114,13 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
 
         // If this is the first time the activity is loading, go ahead and add a BookListFragment
         if (savedInstanceState == null) {
-            controlFragment = ControlFragment()
             bookListFragment = BookListFragment()
             supportFragmentManager.beginTransaction()
                 .add(R.id.container1, bookListFragment, BOOKLISTFRAGMENT_KEY)
-                .add(R.id.control, controlFragment, CONTROLFRAGMENT_KEY)
                 .commit()
-        } else {
+        } else {// reattach already made fragments, instead of creating new ones, by assign the old on the fragment manager containers to our names
             bookListFragment = supportFragmentManager.findFragmentByTag(BOOKLISTFRAGMENT_KEY) as BookListFragment
+            controlFragment = supportFragmentManager.findFragmentByTag(CONTROLFRAGMENT_KEY) as ControlFragment
             // If activity loaded previously, there's already a BookListFragment
             // If we have a single container and a selected book, place it on top
             if (isSingleContainer && selectedBookViewModel.getSelectedBook().value != null) {
@@ -188,13 +197,13 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
             mediaPlayer.stop()
 
         }
-        //stopService(serviceIntent)
+        stopService(serviceIntent)
     }
 
     override fun changeTime(position: Int) {
         //Toast.makeText(this, "Changing Time", Toast.LENGTH_SHORT).show()
         if(serviceConnected){
-            Toast.makeText(this, "position: "+position.toString()+" duration: "+ selectedBookViewModel.getPlayingBook().value!!.duration.toString(), Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, "position: "+position.toString()+" duration: "+ selectedBookViewModel.getPlayingBook().value!!.duration.toString(), Toast.LENGTH_SHORT).show()
             mediaPlayer.seekTo(((((position/100f)) * selectedBookViewModel.getPlayingBook().value!!.duration).toInt()))
 
 
