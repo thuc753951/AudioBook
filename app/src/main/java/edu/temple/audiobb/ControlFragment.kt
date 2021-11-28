@@ -68,7 +68,7 @@ class ControlFragment : Fragment() {
     }
 
     fun setPlaying(title: String){
-        nowPlaying.text = title
+        nowPlaying.text = "Now Playing: $title"
     }
     fun updateProgress(position: Int){
         seekBar.progress = position
