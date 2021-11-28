@@ -51,6 +51,8 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
     private var serviceConnected: Boolean = false
     lateinit var serviceIntent: Intent
 
+
+    // to show progress of the service
     var progressHandler = Handler(
         Looper.getMainLooper()
     ) { message -> // Don't update contols if we don't know what bok the service is playing
@@ -62,7 +64,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
     }
 
 
-
+    // connection the binder to the service of the class, have to start service with an intent
     private val Connection = object : ServiceConnection{
         override fun onServiceConnected(p0: ComponentName?, ibinder: IBinder?) {
             mediaPlayer = ibinder as PlayerService.MediaControlBinder
@@ -81,7 +83,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
         setContentView(R.layout.activity_main)
 
         //register for download reciever here
-        // this is how you start a intent to a service
+        // this is how you start a intent to start a service
         serviceIntent = Intent(this, PlayerService::class.java)
         bindService(serviceIntent,Connection, BIND_AUTO_CREATE)
 
@@ -151,29 +153,38 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
         var tempBook = selectedBookViewModel.getSelectedBook().value
         if(tempBook != null){
             controlFragment.nowPlaying.text = tempBook.title
-            //Log.d("FILE", bookList.getByTitle(selectedBook).getFile().toString() + ": path of selected book")
 
             if(serviceConnected){
                 mediaPlayer.play(tempBook.id)
-                // download here for next assignment
+                // download here for next assignment probably
                 Toast.makeText(this, "Playing "+tempBook.title, Toast.LENGTH_SHORT).show()
             }
 
-        }else{
+        }else{ //do something else??
 
         }
     }
 
     override fun pause() {
-        Toast.makeText(this, "Pressed Paused", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this, "Pressed Paused", Toast.LENGTH_SHORT).show()
+        if(serviceConnected){
+            mediaPlayer.pause()
+        }
     }
 
     override fun stop() {
-        Toast.makeText(this, "Pressed Stop", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this, "Pressed Stop", Toast.LENGTH_SHORT).show()
+        if(serviceConnected){
+            mediaPlayer.stop()
+
+        }
+        //stopService(serviceIntent)
     }
 
     override fun changeTime(position: Int) {
-        Toast.makeText(this, "Changing Time", Toast.LENGTH_SHORT).show()
-
+        //Toast.makeText(this, "Changing Time", Toast.LENGTH_SHORT).show()
+        if(serviceConnected){
+            mediaPlayer.seekTo(((position/100f)* selectedBookViewModel.getPlayingBook().value!!.duration).toInt())
+        }
     }
 }
