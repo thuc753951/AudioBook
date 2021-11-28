@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
 
     private lateinit var bookListFragment : BookListFragment
     private lateinit var controlFragment: ControlFragment
-
+    lateinit var mediaPlayer: PlayerService.MediaControlBinder
 
 
     private val searchRequest = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
