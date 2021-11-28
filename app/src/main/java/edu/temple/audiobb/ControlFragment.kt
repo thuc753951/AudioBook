@@ -2,6 +2,7 @@ package edu.temple.audiobb
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +36,7 @@ class ControlFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val layout = inflater.inflate(R.layout.fragment_control, container, false)
+        seekBar = layout.findViewById(R.id.seekBar)
 
         play = layout.findViewById(R.id.play)
         play.setOnClickListener {
@@ -50,10 +52,11 @@ class ControlFragment : Fragment() {
         }
         nowPlaying = layout.findViewById(R.id.nowPlaying)
 
-        seekBar = layout.findViewById(R.id.seekBar)
 
         seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+                //Log.d( "PROGRESS", "POSITION: "+i.toString())
+                updateProgress(i)
                 if (b) parentInterface.changeTime(i)
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -67,8 +70,8 @@ class ControlFragment : Fragment() {
     fun setPlaying(title: String){
         nowPlaying.text = title
     }
-    fun updateProgress(progress: Int){
-        seekBar.progress = progress
+    fun updateProgress(position: Int){
+        seekBar.progress = position
     }
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -77,25 +80,7 @@ class ControlFragment : Fragment() {
             context as ControlInterface else throw RuntimeException("Please implement ControlFragment.ControlInterface")
     }
 
-//    companion object {
-//        /**
-//         * Use this factory method to create a new instance of
-//         * this fragment using the provided parameters.
-//         *
-//         * @param param1 Parameter 1.
-//         * @param param2 Parameter 2.
-//         * @return A new instance of fragment ControlFragment.
-//         */
-//
-//        @JvmStatic
-//        fun newInstance(param1: String, param2: String) =
-//            ControlFragment().apply {
-//                arguments = Bundle().apply {
-//                    putString(ARG_PARAM1, param1)
-//                    putString(ARG_PARAM2, param2)
-//                }
-//            }
-//    }
+
     interface ControlInterface {
         fun play()
         fun pause()

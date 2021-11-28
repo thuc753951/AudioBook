@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.Toast
@@ -57,7 +58,14 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
         Looper.getMainLooper()
     ) { message -> // Don't update contols if we don't know what bok the service is playing
         if (message.obj != null && selectedBookViewModel.getPlayingBook().value != null) {
-            controlFragment.updateProgress(((message.obj as PlayerService.BookProgress).progress  / selectedBookViewModel.getPlayingBook().value!!.duration * 100) as Int)
+            var tempBook = selectedBookViewModel.getPlayingBook().value
+            // the number for math needs to be float, never use Integers
+            var place = (message.obj as PlayerService.BookProgress).progress.toFloat()
+            var place2 = tempBook!!.duration
+            var num = ((place / place2)*100).toInt()
+            Log.d( "PROGRESS", "NUM: "+num.toString()+" POSITION: "+place.toString()+" DURATION: "+ place2.toString())
+            controlFragment.updateProgress(num)
+
             controlFragment.setPlaying(selectedBookViewModel.getPlayingBook().value!!.title)
         }
         true
@@ -153,7 +161,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
         var tempBook = selectedBookViewModel.getSelectedBook().value
         if(tempBook != null){
             selectedBookViewModel.setPlayingBook(tempBook)
-            controlFragment.nowPlaying.text = tempBook.title
+            //controlFragment.nowPlaying.text = tempBook.title
 
             if(serviceConnected){
                 mediaPlayer.play(tempBook.id)
@@ -186,7 +194,10 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
     override fun changeTime(position: Int) {
         //Toast.makeText(this, "Changing Time", Toast.LENGTH_SHORT).show()
         if(serviceConnected){
-            mediaPlayer.seekTo((((position/100f).toInt())* selectedBookViewModel.getPlayingBook().value!!.duration))
+            Toast.makeText(this, "position: "+position.toString()+" duration: "+ selectedBookViewModel.getPlayingBook().value!!.duration.toString(), Toast.LENGTH_SHORT).show()
+            mediaPlayer.seekTo(((((position/100f)) * selectedBookViewModel.getPlayingBook().value!!.duration).toInt()))
+
+
         }
     }
 
