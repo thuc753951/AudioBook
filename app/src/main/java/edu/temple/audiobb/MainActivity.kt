@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
         Looper.getMainLooper()
     ) { message -> // Don't update contols if we don't know what bok the service is playing
         if (message.obj != null && selectedBookViewModel.getPlayingBook().value != null) {
-            controlFragment.updateProgress(((message.obj as PlayerService.BookProgress).progress as Float / selectedBookViewModel.getPlayingBook().value!!.duration * 100) as Int)
+            controlFragment.updateProgress(((message.obj as PlayerService.BookProgress).progress  / selectedBookViewModel.getPlayingBook().value!!.duration * 100) as Int)
             controlFragment.setPlaying(selectedBookViewModel.getPlayingBook().value!!.title)
         }
         true
@@ -158,7 +158,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
             if(serviceConnected){
                 mediaPlayer.play(tempBook.id)
                 // download here for next assignment probably
-                Toast.makeText(this, "Playing "+tempBook.title, Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this, "Playing "+tempBook.title, Toast.LENGTH_SHORT).show()
             }
 
         }else{ //do something else??
@@ -186,7 +186,12 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
     override fun changeTime(position: Int) {
         //Toast.makeText(this, "Changing Time", Toast.LENGTH_SHORT).show()
         if(serviceConnected){
-            mediaPlayer.seekTo(((position/100f)* selectedBookViewModel.getPlayingBook().value!!.duration).toInt())
+            mediaPlayer.seekTo((((position/100f).toInt())* selectedBookViewModel.getPlayingBook().value!!.duration))
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unbindService(Connection)
     }
 }

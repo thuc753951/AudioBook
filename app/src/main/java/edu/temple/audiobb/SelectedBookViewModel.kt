@@ -30,4 +30,8 @@ class SelectedBookViewModel : ViewModel() {
         this.playingBook.value = selectedBook
     }
 
+    fun setDuration(position: Int){
+        this.playingBook.value!!.duration = position
+    }
+
 }
