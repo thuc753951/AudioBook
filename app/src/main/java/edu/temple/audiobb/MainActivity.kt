@@ -152,6 +152,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
         //Toast.makeText(this, "Pressed Play", Toast.LENGTH_SHORT).show()
         var tempBook = selectedBookViewModel.getSelectedBook().value
         if(tempBook != null){
+            selectedBookViewModel.setPlayingBook(tempBook)
             controlFragment.nowPlaying.text = tempBook.title
 
             if(serviceConnected){
@@ -163,6 +164,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
         }else{ //do something else??
 
         }
+        startService(serviceIntent)
     }
 
     override fun pause() {
