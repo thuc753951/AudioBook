@@ -1,5 +1,5 @@
-# Lab9_AudioBB
-lab 9 audio book streaming, this project demonstrates the usages of handlers, intent to start services, Network services to stream audio to the phone,
+# AudioBook with audio streaming over network
+audio book streaming, this project demonstrates the usages of handlers, intent to start services, Network services to stream audio to the phone,
 Using aar library to add functionality and utilization of different modules. 
 # other
 -usage of multiple fragments
